@@ -1,0 +1,108 @@
+---
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: 'Play',
+    links: [
+      { href: '/quickstart/', label: 'Beginners Guide' },
+      { href: '/card-gallery/', label: 'Card Gallery' },
+      { href: '/errata/', label: 'Errata & Rulings' },
+      { href: '/resources/', label: 'Rulebooks' },
+      { href: '/play/', label: 'Play Network' },
+    ],
+  },
+  {
+    title: 'Community',
+    links: [
+      { href: '/news/', label: 'News' },
+      { href: 'https://excelsior.cards', label: 'Deck Builder', ext: true },
+      { href: '/about/', label: 'About' },
+      { href: '/contact/', label: 'Contact' },
+    ],
+  },
+  {
+    title: 'Trade',
+    links: [
+      { href: 'https://store.overpowercardgame.com', label: 'Store', ext: true },
+      { href: '/retailers/', label: 'Welcome Retailers' },
+      { href: '/retail-inquiries/', label: 'Retail Inquiries' },
+    ],
+  },
+];
+---
+
+<footer class="site-foot">
+  <div class="shell-wide">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="brand-mark" aria-hidden="true">OP</span>
+        <p class="foot-blurb">
+          The superhero trading card game. Originally released in 1995,
+          relaunched and in print again.
+        </p>
+      </div>
+
+      {columns.map((col) => (
+        <nav class="foot-col" aria-label={col.title}>
+          <h2 class="foot-title">{col.title}</h2>
+          {col.links.map((l) => (
+            <a href={l.href} rel={l.ext ? 'noopener' : undefined}>{l.label}</a>
+          ))}
+        </nav>
+      ))}
+    </div>
+
+    <div class="foot-base">
+      <p class="tnum">&copy; {year} OverPower TCG</p>
+      <nav class="foot-legal" aria-label="Legal">
+        <a href="/privacy/">Privacy</a>
+        <a href="/terms/">Terms</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-foot {
+    margin-top: auto;
+    border-top: 1px solid var(--rule);
+    background: var(--surface);
+    padding: var(--s-8) 0 var(--s-5);
+    font-size: var(--t-sm);
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: var(--s-7) var(--s-5);
+  }
+  @media (max-width: 860px) { .foot-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .foot-grid { grid-template-columns: 1fr; gap: var(--s-6); } }
+
+  .brand-mark {
+    font-family: var(--f-display); font-weight: 700; font-size: 18px; letter-spacing: .04em;
+    background: var(--brand-red); color: #fff; padding: 5px 8px 4px; border-radius: 2px;
+    line-height: 1; display: inline-block;
+  }
+  .foot-blurb { color: var(--ink-3); margin-top: var(--s-4); max-width: 34ch; line-height: 1.6; }
+
+  .foot-col { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+  .foot-title {
+    font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: var(--s-2);
+  }
+  .foot-col a { color: var(--ink-2); text-decoration: none; }
+  .foot-col a:hover { color: var(--brand-red-lift); }
+
+  .foot-base {
+    display: flex; justify-content: space-between; align-items: center; gap: var(--s-4);
+    flex-wrap: wrap;
+    margin-top: var(--s-8); padding-top: var(--s-4);
+    border-top: 1px solid var(--rule);
+    color: var(--ink-3);
+  }
+  .foot-legal { display: flex; gap: var(--s-4); }
+  .foot-legal a { color: var(--ink-3); text-decoration: none; }
+  .foot-legal a:hover { color: var(--ink-2); }
+</style>

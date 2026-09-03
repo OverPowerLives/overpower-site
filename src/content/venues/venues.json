@@ -1,0 +1,29 @@
+[
+  {
+    "id": "sample-01",
+    "name": "SAMPLE VENUE — replaced at import",
+    "city": "Boston",
+    "region": "MA",
+    "country": "USA",
+    "schedule": "Thursdays, 6pm",
+    "level": "Sanctioned"
+  },
+  {
+    "id": "sample-02",
+    "name": "SAMPLE VENUE — replaced at import",
+    "city": "Oklahoma City",
+    "region": "OK",
+    "country": "USA",
+    "schedule": "Alternate Saturdays",
+    "level": "Casual"
+  },
+  {
+    "id": "sample-03",
+    "name": "SAMPLE VENUE — replaced at import",
+    "city": "Buffalo",
+    "region": "NY",
+    "country": "USA",
+    "schedule": "First Sunday monthly",
+    "level": "Regional"
+  }
+]

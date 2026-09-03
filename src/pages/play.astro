@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const venues = (await getCollection('venues'))
+  .sort((a, b) => a.data.region.localeCompare(b.data.region) || a.data.city.localeCompare(b.data.city));
+
+const regions = [...new Set(venues.map((v) => v.data.region))].sort();
+---
+
+<Base title="Play Network" description="Stores and venues running sanctioned and casual OverPower play.">
+  <div class="shell">
+    <header class="page-head">
+      <span class="eyebrow">{venues.length} venues</span>
+      <h1>Play Network</h1>
+      <p class="lede">
+        Stores and clubs running OverPower. Adding a venue is now a single entry in
+        <code>venues.json</code> rather than a page edit.
+      </p>
+      <p class="cta-row">
+        <a class="btn btn-primary" href="/contact/">List your store</a>
+      </p>
+    </header>
+
+    <div class="chips" role="group" aria-label="Filter by region">
+      <button class="chip on" data-region="all" type="button">All</button>
+      {regions.map((r) => <button class="chip" data-region={r} type="button">{r}</button>)}
+    </div>
+
+    <div class="tw">
+      <table>
+        <thead>
+          <tr><th>Venue</th><th>Location</th><th>Plays</th><th>Level</th></tr>
+        </thead>
+        <tbody id="rows">
+          {venues.map((v) => (
+            <tr data-region={v.data.region}>
+              <td class="v-name">
+                {v.data.url ? <a href={v.data.url} rel="noopener">{v.data.name}</a> : v.data.name}
+              </td>
+              <td>{v.data.city}, {v.data.region}</td>
+              <td>{v.data.schedule ?? '—'}</td>
+              <td><span class:list={['lvl', v.data.level.toLowerCase()]}>{v.data.level}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page-head { padding-block: var(--s-8) var(--s-6); max-width: var(--measure); }
+  .page-head h1 { margin-top: var(--s-3); }
+  .page-head .lede { margin-top: var(--s-4); }
+  .page-head code { font-family: var(--f-mono); font-size: .85em; background: var(--surface-2); padding: 1px 5px; border-radius: 2px; }
+  .cta-row { margin-top: var(--s-5); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-5); }
+  .chip {
+    font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    background: none; border: 1px solid var(--rule-2); color: var(--ink-3);
+    padding: 6px 11px; border-radius: 2px; cursor: pointer;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--ink-3); }
+  .chip.on { background: var(--brand-red); border-color: var(--brand-red); color: #fff; }
+
+  .tw { overflow-x: auto; border: 1px solid var(--rule); background: var(--surface); margin-bottom: var(--s-9); }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: var(--t-sm); }
+  th {
+    text-align: left; font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
+    padding: 12px 16px; border-bottom: 1px solid var(--rule-2); white-space: nowrap;
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--rule); color: var(--ink-2); }
+  tr:last-child td { border-bottom: 0; }
+  tr[hidden] { display: none; }
+  .v-name { color: var(--ink); font-weight: 500; }
+  .v-name a { color: var(--ink); text-decoration: none; }
+  .v-name a:hover { color: var(--brand-red-lift); }
+
+  .lvl {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 2px; white-space: nowrap;
+    border: 1px solid currentColor;
+  }
+  .lvl.casual { color: var(--ink-3); }
+  .lvl.sanctioned { color: var(--ok); }
+  .lvl.regional { color: var(--brand-gold); }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const rows = document.querySelectorAll<HTMLTableRowElement>('#rows tr');
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const region = chip.dataset.region;
+      chips.forEach((c) => c.classList.toggle('on', c === chip));
+      rows.forEach((r) => { r.hidden = !(region === 'all' || r.dataset.region === region); });
+    });
+  });
+</script>

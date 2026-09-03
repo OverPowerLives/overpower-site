@@ -1,0 +1,65 @@
+/* =========================================================================
+   BRAND TOKENS — this is the only file you need to touch to rebrand the site.
+   Everything else derives from these values.
+
+   TODO(brand): the three values marked SWAP are educated placeholders. Replace
+   them with the real values from the OverPower brand kit (or sampled from
+   opLogo.png) and the whole site follows.
+   ========================================================================= */
+
+:root {
+  /* --- Brand ------------------------------------------------------------ */
+  --brand-red:      #D01C2E;  /* SWAP — primary brand red */
+  --brand-red-lift: #F03248;  /* SWAP — hover / lifted state */
+  --brand-gold:     #E5B23C;  /* SWAP — "Power" accent, used sparingly */
+
+  /* --- Ground ----------------------------------------------------------- */
+  /* Dark-first: card art reads best against a deep neutral, and it's what
+     players expect from a TCG site. To flip the site light, swap --ground and
+     --ink here and nothing else changes. */
+  --ground:    #0E0F13;
+  --surface:   #16181D;
+  --surface-2: #1E2127;
+  --surface-3: #282C34;
+
+  /* --- Text ------------------------------------------------------------- */
+  --ink:    #F2F1EF;
+  --ink-2:  #B4B8C0;
+  --ink-3:  #7F858F;
+
+  /* --- Lines ------------------------------------------------------------ */
+  --rule:   #262A31;
+  --rule-2: #363B44;
+
+  /* --- Semantic (separate from the brand accent) ------------------------ */
+  --ok:    #3FB98C;
+  --warn:  #E0A54A;
+  --stop:  #E5544E;
+
+  /* --- Type ------------------------------------------------------------- */
+  --f-display: "Saira Condensed", "Arial Narrow", Arial, sans-serif;
+  --f-body:    "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono:    "Roboto Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Type scale — 1.25 major third, clamped for fluid headings */
+  --t-xs:  0.75rem;
+  --t-sm:  0.875rem;
+  --t-base: 1rem;
+  --t-md:  1.125rem;
+  --t-lg:  clamp(1.25rem, 1.6vw, 1.4rem);
+  --t-xl:  clamp(1.6rem, 2.6vw, 2rem);
+  --t-2xl: clamp(2.1rem, 4.4vw, 3rem);
+  --t-3xl: clamp(2.8rem, 7vw, 4.75rem);
+
+  /* --- Space ------------------------------------------------------------ */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+
+  /* --- Layout ----------------------------------------------------------- */
+  --measure: 68ch;
+  --shell:   1200px;
+  --shell-wide: 1440px;
+  --radius:  3px;
+
+  --shadow: 0 1px 0 rgba(0,0,0,.5), 0 12px 32px -22px rgba(0,0,0,.95);
+}

@@ -1,0 +1,68 @@
+---
+/**
+ * Placeholder for pages that get written in Phase 2.
+ *
+ * Every one of these is a real route with real navigation, a real title and real
+ * SEO metadata — only the body copy is outstanding. That means the site can be
+ * reviewed end to end, and links between pages are already correct.
+ */
+interface Props {
+  title: string;
+  eyebrow?: string;
+  lede?: string;
+  /** What has to come across from WordPress before this page is finished. */
+  needs?: string[];
+}
+const { title, eyebrow, lede, needs = [] } = Astro.props;
+---
+
+<div class="shell">
+  <header class="page-head">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+  </header>
+
+  <div class="stub">
+    <p class="stub-tag">Phase 2 — not yet written</p>
+    <p class="stub-copy">
+      The route, navigation, title and metadata for this page are live. The content
+      is rebuilt here rather than ported out of Elementor.
+    </p>
+    {needs.length > 0 && (
+      <>
+        <p class="stub-label">Needed to finish it</p>
+        <ul class="stub-needs">{needs.map((n) => <li>{n}</li>)}</ul>
+      </>
+    )}
+  </div>
+
+  <slot />
+</div>
+
+<style>
+  .page-head { padding-block: var(--s-8) var(--s-6); max-width: var(--measure); }
+  .page-head h1 { margin-top: var(--s-3); }
+  .page-head .lede { margin-top: var(--s-4); }
+
+  .stub {
+    border: 1px dashed var(--rule-2);
+    border-left: 3px solid var(--brand-gold);
+    background: var(--surface);
+    padding: var(--s-5) var(--s-6);
+    max-width: var(--measure);
+    margin-bottom: var(--s-9);
+  }
+  .stub-tag {
+    font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--brand-gold);
+  }
+  .stub-copy { color: var(--ink-2); font-size: var(--t-sm); margin-top: var(--s-3); }
+  .stub-label {
+    font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+    margin-top: var(--s-5);
+  }
+  .stub-needs { margin: var(--s-3) 0 0; padding-left: var(--s-5); color: var(--ink-2); font-size: var(--t-sm); }
+  .stub-needs li { margin-bottom: var(--s-2); }
+</style>

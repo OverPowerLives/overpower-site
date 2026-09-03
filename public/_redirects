@@ -1,0 +1,16 @@
+# Cloudflare Pages redirects.
+# Free tier allows 2,000 static rules; this uses 5.
+#
+# The 89 news posts are deliberately absent: their WordPress slugs are preserved
+# verbatim by src/pages/[...slug].astro, so they need no redirect at all.
+
+# --- Duplicate legal pages: keep one of each -------------------------------
+/privacy-policy-2      /privacy/     301
+/terms-of-service      /terms/       301
+
+# --- Dev leftovers that ended up in the sitemap ----------------------------
+/test2                 /             301
+/elementor-3490        /             301
+
+# --- Search engines have the old sitemap path cached -----------------------
+/wp-sitemap.xml        /sitemap-index.xml   301

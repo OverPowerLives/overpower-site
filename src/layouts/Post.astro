@@ -1,0 +1,76 @@
+---
+import Base from './Base.astro';
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { post: CollectionEntry<'news'>; }
+const { post } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroAlt, category, tags, author } = post.data;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base title={title} description={description}>
+  <article class="post">
+    <div class="shell">
+      <header class="post-head">
+        <div class="post-meta">
+          <span class="eyebrow">{category}</span>
+          <time datetime={pubDate.toISOString()} class="tnum">{fmt(pubDate)}</time>
+          {author && <span class="post-author">{author}</span>}
+        </div>
+        <h1>{title}</h1>
+        {description && <p class="lede post-lede">{description}</p>}
+      </header>
+    </div>
+
+    {heroImage && (
+      <div class="shell-wide post-hero">
+        <Image src={heroImage} alt={heroAlt ?? ''} widths={[640, 1024, 1600]} loading="eager" />
+      </div>
+    )}
+
+    <div class="shell">
+      <div class="prose post-body"><slot /></div>
+
+      <footer class="post-foot">
+        {updatedDate && (
+          <p class="post-updated">Updated <time datetime={updatedDate.toISOString()}>{fmt(updatedDate)}</time></p>
+        )}
+        {tags.length > 0 && (
+          <ul class="tags">
+            {tags.map((t) => <li>{t}</li>)}
+          </ul>
+        )}
+        <a href="/news/" class="btn btn-ghost">&larr; All news</a>
+      </footer>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post { padding-block: var(--s-8) var(--s-9); }
+  .post-head { max-width: var(--measure); }
+  .post-meta {
+    display: flex; align-items: baseline; gap: var(--s-4); flex-wrap: wrap;
+    font-size: var(--t-sm); color: var(--ink-3); margin-bottom: var(--s-4);
+  }
+  .post-author { color: var(--ink-3); }
+  .post-lede { margin-top: var(--s-5); }
+  .post-hero { margin-block: var(--s-7); }
+  .post-hero :global(img) { border-radius: var(--radius); width: 100%; }
+  .post-body { margin-top: var(--s-7); }
+  .post-foot {
+    max-width: var(--measure);
+    margin-top: var(--s-8); padding-top: var(--s-5);
+    border-top: 1px solid var(--rule);
+    display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-4);
+  }
+  .post-updated { font-size: var(--t-sm); color: var(--ink-3); margin: 0; }
+  .tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .tags li {
+    font-family: var(--f-mono); font-size: var(--t-xs); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-3); border: 1px solid var(--rule-2); border-radius: 2px; padding: 3px 8px;
+  }
+</style>

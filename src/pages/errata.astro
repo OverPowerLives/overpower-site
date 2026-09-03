@@ -1,0 +1,210 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const all = (await getCollection('errata'))
+  .sort((a, b) => b.data.effectiveDate.valueOf() - a.data.effectiveDate.valueOf());
+
+const sections = ['Season 1 Errata', '2025 Rules Changes'] as const;
+const slots = [...new Set(all.map((e) => e.data.slot))].sort();
+
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+const latest = all[0]?.data.effectiveDate;
+---
+
+<Base
+  title="Errata & Rulings"
+  description="Official OverPower card errata and rules changes, searchable and filterable by card slot."
+>
+  <div class="shell">
+    <header class="page-head">
+      <span class="eyebrow">
+        {all.length} rulings{latest ? ` · current to ${fmt(latest)}` : ''}
+      </span>
+      <h1>Errata &amp; Rulings</h1>
+      <p class="lede">
+        Every official correction and rules change, newest first. Search the full text or
+        narrow by card slot. Each entry keeps the anchor link it has always had, so
+        rulings shared in Discord still resolve.
+      </p>
+      <p class="print-hint">
+        <button class="btn btn-ghost" type="button" id="print">Print / save as PDF</button>
+      </p>
+    </header>
+
+    <div class="controls">
+      <label class="search">
+        <span class="vh">Search rulings</span>
+        <input type="search" id="q" placeholder="Search card name or ruling text…" autocomplete="off" />
+      </label>
+      <div class="chips" role="group" aria-label="Filter by slot">
+        <button class="chip on" data-slot="all" type="button">All slots</button>
+        {slots.map((s) => <button class="chip" data-slot={s} type="button">{s}</button>)}
+      </div>
+    </div>
+
+    <p class="count" id="count" aria-live="polite"></p>
+
+    {sections.map((section) => {
+      const entries = all.filter((e) => e.data.section === section);
+      if (entries.length === 0) return null;
+      return (
+        <section class="sect" data-section={section}>
+          <h2 class="sect-head">{section}</h2>
+          <ol class="rulings">
+            {entries.map((e) => (
+              <li
+                class="ruling"
+                id={e.data.anchor}
+                data-slot={e.data.slot}
+                data-text={`${e.data.cardName} ${e.data.character ?? ''} ${e.data.ruling}`.toLowerCase()}
+              >
+                <div class="r-meta">
+                  <span class="slot-tag">{e.data.slot}</span>
+                  <time datetime={e.data.effectiveDate.toISOString()} class="tnum r-date">{fmt(e.data.effectiveDate)}</time>
+                </div>
+                <div class="r-main">
+                  <h3>
+                    {e.data.cardName}
+                    <a class="anchor" href={`#${e.data.anchor}`} aria-label={`Link to ${e.data.cardName}`}>#</a>
+                  </h3>
+                  <p class="r-card">
+                    {e.data.cardSet}{e.data.character ? ` · ${e.data.character}` : ''}
+                  </p>
+                  <p class="r-text">{e.data.ruling}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      );
+    })}
+
+    <p class="empty" id="empty" hidden>No rulings match that search.</p>
+  </div>
+</Base>
+
+<style>
+  .page-head { padding-block: var(--s-8) var(--s-6); max-width: var(--measure); }
+  .page-head h1 { margin-top: var(--s-3); }
+  .page-head .lede { margin-top: var(--s-4); }
+  .print-hint { margin-top: var(--s-5); }
+
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center;
+    padding-bottom: var(--s-5); border-bottom: 2px solid var(--ink);
+    position: sticky; top: 68px; background: var(--ground); padding-top: var(--s-4); z-index: 10;
+  }
+  .search { flex: 1 1 260px; }
+  .search input {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--rule-2);
+    border-radius: 2px; padding: 10px 14px; color: var(--ink); font-size: var(--t-sm);
+  }
+  .search input::placeholder { color: var(--ink-3); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .chip {
+    font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    background: none; border: 1px solid var(--rule-2); color: var(--ink-3);
+    padding: 6px 11px; border-radius: 2px; cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--ink-3); }
+  .chip.on { background: var(--brand-red); border-color: var(--brand-red); color: #fff; }
+
+  .count { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--ink-3); margin-top: var(--s-4); letter-spacing: .08em; text-transform: uppercase; }
+
+  .sect { margin-top: var(--s-7); }
+  .sect[hidden] { display: none; }
+  .sect-head {
+    font-size: var(--t-lg); color: var(--ink-3);
+    font-family: var(--f-mono); font-weight: 700; letter-spacing: .14em;
+    padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-2);
+  }
+
+  .rulings { list-style: none; padding: 0; margin: 0; }
+  .ruling {
+    display: grid; grid-template-columns: 160px 1fr; gap: var(--s-5);
+    padding: var(--s-5) 0; border-bottom: 1px solid var(--rule);
+    scroll-margin-top: 150px;
+  }
+  .ruling[hidden] { display: none; }
+  .ruling:target { background: color-mix(in srgb, var(--brand-red) 10%, transparent); }
+
+  .r-meta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+  .slot-tag {
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--brand-gold);
+    border: 1px solid color-mix(in srgb, var(--brand-gold) 45%, transparent);
+    border-radius: 2px; padding: 3px 7px; white-space: nowrap;
+  }
+  .r-date { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--ink-3); }
+
+  .r-main h3 { font-size: var(--t-md); display: flex; align-items: baseline; gap: var(--s-2); }
+  .anchor { color: var(--ink-3); text-decoration: none; font-family: var(--f-mono); opacity: 0; transition: opacity .15s ease; }
+  .ruling:hover .anchor, .anchor:focus-visible { opacity: 1; }
+  .r-card { font-size: var(--t-xs); color: var(--ink-3); font-family: var(--f-mono); letter-spacing: .04em; margin-top: var(--s-1); }
+  .r-text { font-size: var(--t-sm); color: var(--ink-2); margin-top: var(--s-3); max-width: 62ch; }
+
+  @media (max-width: 700px) {
+    .ruling { grid-template-columns: 1fr; gap: var(--s-3); }
+    .r-meta { flex-direction: row; align-items: center; gap: var(--s-3); }
+    .controls { position: static; }
+  }
+
+  .empty { color: var(--ink-3); padding-block: var(--s-7); }
+  .empty[hidden] { display: none; }
+
+  @media print {
+    .controls, .print-hint, .count, .anchor { display: none !important; }
+    .ruling { break-inside: avoid; }
+  }
+</style>
+
+<script>
+  const q = document.querySelector<HTMLInputElement>('#q');
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const rulings = document.querySelectorAll<HTMLLIElement>('.ruling');
+  const sects = document.querySelectorAll<HTMLElement>('.sect');
+  const count = document.querySelector<HTMLElement>('#count');
+  const empty = document.querySelector<HTMLElement>('#empty');
+
+  let slot = 'all';
+
+  function apply() {
+    const term = (q?.value ?? '').trim().toLowerCase();
+    let shown = 0;
+
+    rulings.forEach((r) => {
+      const okSlot = slot === 'all' || r.dataset.slot === slot;
+      const okText = term === '' || (r.dataset.text ?? '').includes(term);
+      const match = okSlot && okText;
+      r.hidden = !match;
+      if (match) shown++;
+    });
+
+    // Hide a section heading when nothing under it survived the filter.
+    sects.forEach((s) => {
+      const any = s.querySelectorAll('.ruling:not([hidden])').length > 0;
+      s.hidden = !any;
+    });
+
+    if (count) count.textContent = `${shown} of ${rulings.length} shown`;
+    if (empty) empty.hidden = shown > 0;
+  }
+
+  q?.addEventListener('input', apply);
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      slot = chip.dataset.slot ?? 'all';
+      chips.forEach((c) => c.classList.toggle('on', c === chip));
+      apply();
+    });
+  });
+  document.querySelector('#print')?.addEventListener('click', () => window.print());
+
+  apply();
+</script>

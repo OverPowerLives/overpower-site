@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Stub from '../components/Stub.astro';
+---
+<Base title="Card Gallery" description="Every card in the OverPower set, filterable by slot and rarity.">
+  <Stub
+    title="Card Gallery"
+    eyebrow="472 cards"
+    lede="Every card in the set, grouped by the slot it comes out of. Rebuilt as real data so it can be filtered and searched instead of scrolled."
+    needs={[
+      "Card data from excelsior.cards — checking whether it exposes an API or export we can build from",
+      "The 472 card images, which currently live in /wp-content/uploads/ and must be pulled before WordPress is decommissioned",
+      "Confirmation of the rarity tiers to filter on alongside the eight slots",
+    ]}
+  />
+</Base>

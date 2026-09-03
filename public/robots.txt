@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://overpowercardgame.com/sitemap-index.xml

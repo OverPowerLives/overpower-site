@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Stub from '../components/Stub.astro';
+---
+<Base title="Resources" description="Rulebooks, tournament guidelines, glossary and downloads.">
+  <Stub
+    title="Resources"
+    eyebrow="Rules & downloads"
+    lede="Rulebooks, tournament guidelines, the glossary and print-and-play files."
+    needs={[
+      "The rulebook and tournament guideline PDFs from /wp-content/uploads/",
+      "Glossary entries — candidate for a data file rather than a page, like Errata",
+    ]}
+  />
+</Base>

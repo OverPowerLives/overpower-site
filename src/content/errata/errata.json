@@ -1,0 +1,34 @@
+[
+  {
+    "id": "s1-001",
+    "anchor": "s1-001",
+    "cardName": "SAMPLE ENTRY — replaced at import",
+    "cardSet": "Season 1",
+    "slot": "Character",
+    "character": "Sample Character",
+    "section": "Season 1 Errata",
+    "ruling": "This is a placeholder record demonstrating the errata schema. Each real entry keeps its original anchor id from the WordPress page so links already shared in Discord continue to resolve after cutover.",
+    "effectiveDate": "2026-09-01"
+  },
+  {
+    "id": "s1-002",
+    "anchor": "s1-002",
+    "cardName": "SAMPLE ENTRY — replaced at import",
+    "cardSet": "Season 1",
+    "slot": "Special",
+    "character": "Sample Character",
+    "section": "Season 1 Errata",
+    "ruling": "A second placeholder, included so the section grouping and the slot filter can both be reviewed with more than one record present.",
+    "effectiveDate": "2026-08-14"
+  },
+  {
+    "id": "rc-2025-001",
+    "anchor": "rc-2025-001",
+    "cardName": "SAMPLE ENTRY — replaced at import",
+    "cardSet": "Core",
+    "slot": "Power",
+    "section": "2025 Rules Changes",
+    "ruling": "Placeholder in the second section, so the page can be checked for correct grouping between Season 1 Errata and the 2025 Rules Changes.",
+    "effectiveDate": "2025-07-02"
+  }
+]

@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('news', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = [...new Set(posts.map((p) => p.data.category))].sort();
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+---
+
+<Base title="News" description="Announcements, rules updates, event reports and design notes from the OverPower team.">
+  <div class="shell">
+    <header class="page-head">
+      <span class="eyebrow">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
+      <h1>News</h1>
+      <p class="lede">
+        Announcements, rulings, event reports and design notes. All {posts.length} posts
+        keep the URLs they had on WordPress.
+      </p>
+    </header>
+
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button class="chip on" data-cat="all" type="button">All</button>
+      {categories.map((c) => <button class="chip" data-cat={c} type="button">{c}</button>)}
+    </div>
+
+    <ol class="list" id="post-list">
+      {posts.map((post) => (
+        <li class="row" data-cat={post.data.category}>
+          <a href={`/${post.id}/`}>
+            <time datetime={post.data.pubDate.toISOString()} class="tnum row-date">{fmt(post.data.pubDate)}</time>
+            <div class="row-main">
+              <h2>{post.data.title}</h2>
+              {post.data.description && <p>{post.data.description}</p>}
+            </div>
+            <span class="row-cat">{post.data.category}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+
+    <p class="empty" id="empty" hidden>No posts in that category.</p>
+  </div>
+</Base>
+
+<style>
+  .page-head { padding-block: var(--s-8) var(--s-6); max-width: var(--measure); }
+  .page-head h1 { margin-top: var(--s-3); }
+  .page-head .lede { margin-top: var(--s-4); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: var(--s-2); padding-bottom: var(--s-5); border-bottom: 2px solid var(--ink); }
+  .chip {
+    font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    background: none; border: 1px solid var(--rule-2); color: var(--ink-3);
+    padding: 6px 12px; border-radius: 2px; cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--ink-3); }
+  .chip.on { background: var(--brand-red); border-color: var(--brand-red); color: #fff; }
+
+  .list { list-style: none; padding: 0; margin: 0 0 var(--s-9); }
+  .row { border-bottom: 1px solid var(--rule); }
+  .row[hidden] { display: none; }
+  .row a {
+    display: grid; grid-template-columns: 130px 1fr auto; gap: var(--s-5);
+    align-items: baseline; padding: var(--s-5) 0;
+    text-decoration: none; color: var(--ink);
+  }
+  .row a:hover h2 { color: var(--brand-red-lift); }
+  .row-date { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--ink-3); white-space: nowrap; }
+  .row-main h2 { font-size: var(--t-lg); transition: color .15s ease; }
+  .row-main p { font-size: var(--t-sm); color: var(--ink-3); margin-top: var(--s-2); max-width: 60ch; }
+  .row-cat {
+    font-family: var(--f-mono); font-size: var(--t-xs); letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); white-space: nowrap;
+  }
+  @media (max-width: 760px) {
+    .row a { grid-template-columns: 1fr; gap: var(--s-2); }
+    .row-cat { display: none; }
+  }
+
+  .empty { color: var(--ink-3); padding-block: var(--s-7); }
+  .empty[hidden] { display: none; }
+</style>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const rows = document.querySelectorAll<HTMLLIElement>('.row');
+  const empty = document.querySelector<HTMLElement>('#empty');
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const cat = chip.dataset.cat;
+      chips.forEach((c) => c.classList.toggle('on', c === chip));
+      let shown = 0;
+      rows.forEach((row) => {
+        const match = cat === 'all' || row.dataset.cat === cat;
+        row.hidden = !match;
+        if (match) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+    });
+  });
+</script>

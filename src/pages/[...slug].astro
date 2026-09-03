@@ -1,0 +1,21 @@
+---
+// Posts live at the site root — /designing-overpower/ — exactly as they do on
+// WordPress today. This is what removes the need for 89 redirects.
+import { getCollection, render } from 'astro:content';
+import Post from '../layouts/Post.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('news', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Post post={post}>
+  <Content />
+</Post>

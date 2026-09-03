@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page not found" noindex={true}>
+  <div class="shell wrap">
+    <span class="eyebrow">404</span>
+    <h1>No card for that one</h1>
+    <p class="lede">
+      That page has moved or never existed. The news archive and the card gallery are
+      the usual places to pick things back up.
+    </p>
+    <p class="acts">
+      <a class="btn btn-primary" href="/">Home</a>
+      <a class="btn btn-ghost" href="/news/">News</a>
+    </p>
+  </div>
+</Base>
+<style>
+  .wrap { padding-block: var(--s-9); max-width: var(--measure); }
+  .wrap h1 { margin-top: var(--s-3); }
+  .wrap .lede { margin-top: var(--s-4); }
+  .acts { display: flex; gap: var(--s-3); margin-top: var(--s-6); flex-wrap: wrap; }
+</style>
