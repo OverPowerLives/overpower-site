@@ -21,33 +21,67 @@ Node 22 (see `.nvmrc`).
 
 ---
 
-## Getting it deployed — the two steps that need your accounts
+## Getting it deployed, from nothing
 
-Everything below this line is done. These two steps need credentials I don't have.
+Assumes no GitHub repo, no git installed, no Cloudflare account. About 20 minutes.
 
-### 1. Push to GitHub
+**Read this first:** Cloudflare offers a drag-and-drop "Direct Upload" deploy. It is
+tempting and it is a trap for this project — **a Direct Upload project can never be
+converted to a Git-connected one.** You'd have to delete it and start over. Use it
+only under a scratch project name if you want to eyeball the site tonight. The real
+project must be created via *Connect to Git*.
 
-```bash
-git init && git add -A && git commit -m "Phase 0: Astro scaffold"
-gh repo create overpower-site --private --source=. --push
-# or create the repo in the GitHub UI and:
-# git remote add origin git@github.com:<you>/overpower-site.git && git push -u origin main
-```
+### Part A — GitHub (~10 min)
 
-### 2. Connect Cloudflare Pages
+1. **Account.** [github.com/signup](https://github.com/signup) if you don't have one.
+2. **Install GitHub Desktop** from [desktop.github.com](https://desktop.github.com).
+   It bundles git — nothing else to install, no CLI, no SSH keys, no access tokens.
+   Sign in; it authenticates through your browser.
+3. **Unzip `overpower-site.zip`** somewhere permanent — Documents, not Downloads.
+4. In GitHub Desktop: **File → Add local repository →** select the `overpower-site`
+   folder. It is *already* a git repo with two commits in it, so this just works.
+   (If you see "this directory does not appear to be a git repository", you selected
+   a parent or child folder — pick the one containing `package.json`.)
+5. Click **Publish repository**. Name it `overpower-site`, leave **Keep this code
+   private** ticked, click Publish.
 
-Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+### Part B — Cloudflare (~10 min)
 
-| Setting | Value |
-|---|---|
-| Framework preset | Astro |
-| Build command | `npm run build` |
-| Build output directory | `dist` |
-| Node version | `22` (env var `NODE_VERSION`) |
+Cloudflare is a web dashboard — nothing to install. The free plan needs an email and
+password and **no credit card**.
 
-First deploy lands on `https://<project>.pages.dev`. **Do not add the custom domain
-yet** — that is Phase 5. Until then, update `site` in `astro.config.mjs` to the real
-`pages.dev` URL so canonical tags and the sitemap don't point at the live WordPress site.
+1. **Account.** [dash.cloudflare.com](https://dash.cloudflare.com) → Sign up. If
+   you've ever put a domain behind Cloudflare, you already have this account.
+2. In the left sidebar: **Workers & Pages → Create application → Pages →
+   Connect to Git.**
+3. Authorize GitHub when prompted. You can scope it to **only** the `overpower-site`
+   repo rather than granting access to everything.
+4. Select the repo, then set:
+
+   | Setting | Value |
+   |---|---|
+   | Framework preset | Astro |
+   | Build command | `npm run build` |
+   | Build output directory | `dist` |
+   | Environment variable | `NODE_VERSION` = `22` |
+
+5. **Save and Deploy.** First build takes ~2 minutes and lands on
+   `https://<project-name>.pages.dev`.
+
+### Part C — one thing to send back
+
+Tell me the `pages.dev` URL. `site` in `astro.config.mjs` is currently a guess, and
+it needs to be the real one so canonical tags and the sitemap don't point at the live
+WordPress site.
+
+**Do not add the custom domain yet** — that is Phase 5, and we're rehearsing it on a
+throwaway domain first.
+
+### After this, the loop is
+
+Edit files → GitHub Desktop shows the changes → write a summary → **Commit to main** →
+**Push origin**. Cloudflare rebuilds and redeploys within about a minute. That is the
+entire deployment process from here on.
 
 ---
 
