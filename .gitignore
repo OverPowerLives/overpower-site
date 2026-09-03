@@ -5,3 +5,50 @@ dist/
 .env.production
 .DS_Store
 npm-debug.log*
+
+# ---------------------------------------------------------------------------
+# Unity — for an interactive demo authored under unity/
+#
+# Only add a Unity project here if it stays small. See README "Unity demos"
+# for why the engine project is usually better off in its own repo.
+# ---------------------------------------------------------------------------
+unity/[Ll]ibrary/
+unity/[Tt]emp/
+unity/[Oo]bj/
+unity/[Bb]uild/
+unity/[Bb]uilds/
+unity/[Ll]ogs/
+unity/[Uu]ser[Ss]ettings/
+unity/[Mm]emoryCaptures/
+unity/[Rr]ecordings/
+
+# Never commit the Unity editor's generated project files
+unity/*.csproj
+unity/*.unityproj
+unity/*.sln
+unity/*.suo
+unity/*.user
+unity/*.userprefs
+unity/*.pidb
+unity/*.booproj
+unity/*.svd
+unity/*.pdb
+unity/*.mdb
+unity/*.opendb
+unity/*.VC.db
+
+# Asset meta files must be committed for anything tracked — never ignore
+# .meta wholesale, or Unity re-GUIDs the assets and references break.
+
+# Crash reports and profiler output
+unity/sysinfo.txt
+unity/crashlytics-build.properties
+unity/*.apk
+unity/*.aab
+unity/*.unitypackage
+unity/*.app
+
+# Addressables / build cache
+unity/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+unity/[Aa]ssets/[Ss]treamingAssets/aa.meta
+unity/[Aa]ssets/[Ss]treamingAssets/aa/*

@@ -129,3 +129,41 @@ Google Fonts in `Base.astro`.
 - [ ] Sveltia CMS + two editor accounts
 - [ ] `site` → `https://overpowercardgame.com`, custom domain, DNS
 - [ ] Resubmit sitemap in Search Console
+
+---
+
+## Unity demos
+
+The `.gitignore` has a Unity section scoped to a `unity/` folder, so a project
+can live here if you want one. Two things to weigh before it does.
+
+**Where the project should live.** Cloudflare clones the whole repo on every
+build, and your two non-technical editors will be committing into it through
+Sveltia. A Unity project — `Library/`, LFS objects, imported assets — makes
+every content edit's deploy slower and puts an engine project in their working
+set. Unless the demo is genuinely small, the better shape is a separate repo for
+the Unity project, with only the WebGL build output copied into `public/demo/`
+here. That also keeps Git LFS out of this repo, which matters because enabling
+it is repo-wide and metered.
+
+**Two Cloudflare constraints worth knowing before you build, not after:**
+
+- **25 MiB per file, hard.** Unity's `.data` and `.wasm` routinely exceed that
+  uncompressed. Brotli usually brings them under, which is an argument for
+  building compressed rather than letting the edge handle it.
+- **20,000 files per deployment**, shared with the rest of the site. Not a
+  problem for a normal WebGL build; would be for a loose `StreamingAssets` dump.
+
+`public/_headers` already carries the Unity `Content-Encoding` and
+`application/wasm` rules, scoped to `/demo/`. Verify them on the first real
+deploy — Cloudflare compresses at the edge too, and that interaction is the
+most likely thing to break.
+
+**The one that would cost you a day.** If the build uses multithreading
+(SharedArrayBuffer), it needs `Cross-Origin-Opener-Policy: same-origin` and
+`Cross-Origin-Embedder-Policy: require-corp`. Applied site-wide, `require-corp`
+blocks every cross-origin resource that doesn't send
+`Cross-Origin-Resource-Policy: cross-origin` — which breaks the Shopify
+Storefront Web Components at Phase 4 and the YouTube embeds for Character
+Spotlight. Keep those two headers scoped to `/demo/*`. They're pre-written and
+commented out in `public/_headers`.

@@ -1,0 +1,48 @@
+# Cloudflare Pages custom headers. Free tier allows 100 rules.
+#
+# Rules are path-scoped. That scoping is doing real work here — see the demo
+# block below, where site-wide headers would break the Shopify integration.
+
+# --- Baseline ---------------------------------------------------------------
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+# --- Unity WebGL demo -------------------------------------------------------
+# Cross-origin isolation is ONLY needed if the build uses multithreading
+# (SharedArrayBuffer). Keep it scoped to /demo/ and never move it to /*:
+# `require-corp` blocks every cross-origin resource that doesn't send
+# `Cross-Origin-Resource-Policy: cross-origin` — which includes the Shopify
+# Storefront Web Components going in at Phase 4, and the YouTube embeds for
+# the Character Spotlight series.
+#
+# Commented out until there's a build that actually needs threads.
+# /demo/*
+#   Cross-Origin-Opener-Policy: same-origin
+#   Cross-Origin-Embedder-Policy: require-corp
+
+# Unity ships pre-compressed assets. The server has to declare the encoding or
+# the loader falls back to Unity's JS decompressor (bigger loader, slower boot).
+#
+# VERIFY ON THE FIRST REAL DEPLOY: Cloudflare also compresses at the edge, and
+# the interaction between that and a pre-compressed asset is the thing most
+# likely to bite. If the loader errors, the fallback is to build without
+# compression and let Cloudflare handle it — at the cost of the 25 MiB
+# per-file ceiling getting much closer.
+/demo/Build/*.br
+  Content-Encoding: br
+/demo/Build/*.gz
+  Content-Encoding: gzip
+/demo/Build/*.wasm
+  Content-Type: application/wasm
+/demo/Build/*.wasm.br
+  Content-Type: application/wasm
+  Content-Encoding: br
+/demo/Build/*.wasm.gz
+  Content-Type: application/wasm
+  Content-Encoding: gzip
+
+# Build output is content-hashed by Unity — safe to cache hard.
+/demo/Build/*
+  Cache-Control: public, max-age=31536000, immutable
